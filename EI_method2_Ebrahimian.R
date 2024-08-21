@@ -26,10 +26,12 @@ date_end_usa <- as.Date("2018-12-31")
 
 # Read in rainfall-runoff data
 load("input/lsc_events.RData")
-data_aus <- data
+data_aus <- data %>%
+  mutate(region = "Melbourne") %>%
+  relocate(region, .before = Site)
 rm(data)
 
-datdatadata_usa <- 
+data_usa <- 
   read_csv("input/Clarksburg_StormEvents_2004_2018.csv", 
            col_types = cols(Precip_Duration_hrs = col_skip(), 
                             Precip_EndTime = 
@@ -44,29 +46,36 @@ datdatadata_usa <-
                             Q_PriorDry_hrs = col_skip(), 
                             Q_RiseRate_cms.hr = col_skip(),  
                             Q_StartTime = col_skip(), 
-                            Q_TimeToFlowPeak_hrs = col_skip(), 
+                            Q_TimeToFlowPeak_hrs = col_skip(),
+                            Q_Total_mm = col_skip(),
                             Q_Total_PrecipRatio = col_skip())) %>%
   filter(Precip_EndTime >= date_start_usa & Precip_EndTime <= date_end_usa) %>%
   filter(Precip_Total_mm >= precip_min & Precip_Total_mm <= precip_max) %>%
-  select(Site, Precip_EndTime, Precip_Total_mm, Q_Total_mm, Q_Runoff_mm)
+  select(Site, Precip_EndTime, Precip_Total_mm, Q_Runoff_mm) %>%
+  mutate(region = "Clarksburg") %>%
+  relocate(region, .before = Site)
+
+# Combine datasets
+data <- bind_rows(data_aus, data_usa)
+rm(data_aus, data_usa)
 
 
 
 ### Step 01: Plot Rainfall-Runoff Data -----------------------------------------
 
-for (i in unique(data$Site)) {
-  plot <- data %>%
-    filter(Site == i) %>%
-    ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm)) +
-    geom_abline(slope = 1, intercept = 0) +
-    geom_point() +
-    scale_x_continuous(limits = c(0, max(data$Precip_Total_mm))) +
-    scale_y_continuous(limits = c(0, max(data$Precip_Total_mm))) +
-    labs(title = i) +
-    theme_bw()
-  print(plot)
-}
-rm(i, plot)
+# for (i in unique(data$Site)) {
+#   plot <- data %>%
+#     filter(Site == i) %>%
+#     ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm)) +
+#     geom_abline(slope = 1, intercept = 0) +
+#     geom_point() +
+#     scale_x_continuous(limits = c(0, max(data$Precip_Total_mm))) +
+#     scale_y_continuous(limits = c(0, max(data$Precip_Total_mm))) +
+#     labs(title = i) +
+#     theme_bw()
+#   print(plot)
+# }
+# rm(i, plot)
 
 
 
@@ -141,6 +150,7 @@ for (i in unique(data$Site)) {
                 data = weights, weights = Weight)
     wls_slope <- wls$coefficients[[2]]
     wls_yint <- wls$coefficients[[1]]
+    # wls_xint <- (-1*wls_yint)/wls_slope
     wls_ci <- confint(wls)
     wls_adjrsquared <- summary(wls)$adj.r.squared
     wls_mse <- mean(summary(wls)$residuals^2)
@@ -198,52 +208,52 @@ rm(i, events, num_combined_events, ols, ols_resid,
 
 ### Step 04: Plot Results ------------------------------------------------------
 
-for (i in unique(data$Site)) {
-  
-  if (event_type == "all") {
-    
-    # Classify events
-    eia_events_i <- eia_events %>% 
-      filter(Site == i) %>%
-      mutate(combo_event = "EIA Event")
-    non_eia_events_i <- events_all %>% 
-      filter(Site == i) %>%
-      anti_join(eia_events_i, by = c("Site", "Precip_EndTime", 
-                                     "Precip_Total_mm", "Q_Runoff_mm")) %>%
-      mutate(combo_event = "Combo Event")
-    events_combo <- bind_rows(eia_events_i, non_eia_events_i)
-    rm(eia_events_i, non_eia_events_i)
-    
-  } else {
-    
-    # Classify events
-    eia_events_i <- eia_events %>% 
-      filter(Site == i) %>%
-      mutate(combo_event = "EIA Event")
-    non_eia_events_i <- events_nonzero %>% 
-      filter(Site == i) %>%
-      anti_join(eia_events_i, by = c("Site", "Precip_EndTime", 
-                                     "Precip_Total_mm", "Q_Runoff_mm")) %>%
-      mutate(combo_event = "Combo Event")
-    events_combo <- bind_rows(eia_events_i, non_eia_events_i)
-    rm(eia_events_i, non_eia_events_i)
-    
-  }
-  
-  # Pull weighted linear regression coefficiencts
-  wls_results_i <- wls_results %>%
-    filter(Site == i)
-  
-  # Make plot
-  plot <- events_combo %>%
-    ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = combo_event)) +
-    geom_point() +
-    geom_abline(slope = wls_results_i$slope, intercept = wls_results_i$yint) +
-    labs(x = "Precipitation Depth (mm)", y = "Runoff Depth (mm)", 
-         title = i, color = "") +
-    theme_bw()
-  print(plot)
-  
-}
-rm(i, events_combo, wls_results_i, plot)
+# for (i in unique(data$Site)) {
+#   
+#   if (event_type == "all") {
+#     
+#     # Classify events
+#     eia_events_i <- eia_events %>% 
+#       filter(Site == i) %>%
+#       mutate(combo_event = "EIA Event")
+#     non_eia_events_i <- events_all %>% 
+#       filter(Site == i) %>%
+#       anti_join(eia_events_i, by = c("Site", "Precip_EndTime", 
+#                                      "Precip_Total_mm", "Q_Runoff_mm")) %>%
+#       mutate(combo_event = "Combo Event")
+#     events_combo <- bind_rows(eia_events_i, non_eia_events_i)
+#     rm(eia_events_i, non_eia_events_i)
+#     
+#   } else {
+#     
+#     # Classify events
+#     eia_events_i <- eia_events %>% 
+#       filter(Site == i) %>%
+#       mutate(combo_event = "EIA Event")
+#     non_eia_events_i <- events_nonzero %>% 
+#       filter(Site == i) %>%
+#       anti_join(eia_events_i, by = c("Site", "Precip_EndTime", 
+#                                      "Precip_Total_mm", "Q_Runoff_mm")) %>%
+#       mutate(combo_event = "Combo Event")
+#     events_combo <- bind_rows(eia_events_i, non_eia_events_i)
+#     rm(eia_events_i, non_eia_events_i)
+#     
+#   }
+#   
+#   # Pull weighted linear regression coefficiencts
+#   wls_results_i <- wls_results %>%
+#     filter(Site == i)
+#   
+#   # Make plot
+#   plot <- events_combo %>%
+#     ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = combo_event)) +
+#     geom_point() +
+#     geom_abline(slope = wls_results_i$slope, intercept = wls_results_i$yint) +
+#     labs(x = "Precipitation Depth (mm)", y = "Runoff Depth (mm)", 
+#          title = i, color = "") +
+#     theme_bw()
+#   print(plot)
+#   
+# }
+# rm(i, events_combo, wls_results_i, plot)
 
