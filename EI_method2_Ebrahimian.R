@@ -2,7 +2,7 @@
 ## Based on Ebrahimian and others (2016) Weighted Linear Regression
 
 # Charlie Stillwell
-# August 16, 2024
+# August 21, 2024
  
 
 
@@ -21,12 +21,16 @@ event_type <- "all"     # one of "all" or "nonzero"
 
 # Specify date range of events to include in analysis
 # (for my data, use precipitation end date-time)
-date_start <- as.Date("2016-01-01")
-date_end <- as.Date("2018-12-31")
+date_start_usa <- as.Date("2016-01-01")
+date_end_usa <- as.Date("2018-12-31")
 
 # Read in rainfall-runoff data
-data <- 
-  read_csv("Input/Clarksburg_StormEvents_2004_2018.csv", 
+load("input/lsc_events.RData")
+data_aus <- data
+rm(data)
+
+datdatadata_usa <- 
+  read_csv("input/Clarksburg_StormEvents_2004_2018.csv", 
            col_types = cols(Precip_Duration_hrs = col_skip(), 
                             Precip_EndTime = 
                               col_datetime(format = "%m/%d/%Y %H:%M"), 
@@ -42,10 +46,10 @@ data <-
                             Q_StartTime = col_skip(), 
                             Q_TimeToFlowPeak_hrs = col_skip(), 
                             Q_Total_PrecipRatio = col_skip())) %>%
-  filter(Precip_EndTime >= date_start & Precip_EndTime <= date_end) %>%
+  filter(Precip_EndTime >= date_start_usa & Precip_EndTime <= date_end_usa) %>%
   filter(Precip_Total_mm >= precip_min & Precip_Total_mm <= precip_max) %>%
   select(Site, Precip_EndTime, Precip_Total_mm, Q_Total_mm, Q_Runoff_mm)
-  
+
 
 
 ### Step 01: Plot Rainfall-Runoff Data -----------------------------------------
