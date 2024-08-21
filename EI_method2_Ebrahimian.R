@@ -25,14 +25,14 @@ date_start_usa <- as.Date("2016-01-01")
 date_end_usa <- as.Date("2018-12-31")
 
 # Read in rainfall-runoff data
-load("input/lsc_events.RData")
+data <- get(load("Input/lsc_events_no_precip_max.Rdata"))
 data_aus <- data %>%
   mutate(region = "Melbourne") %>%
   relocate(region, .before = Site)
 rm(data)
 
 data_usa <- 
-  read_csv("input/Clarksburg_StormEvents_2004_2018.csv", 
+  read_csv("Input/Clarksburg_StormEvents_2004_2018.csv", 
            col_types = cols(Precip_Duration_hrs = col_skip(), 
                             Precip_EndTime = 
                               col_datetime(format = "%m/%d/%Y %H:%M"), 
