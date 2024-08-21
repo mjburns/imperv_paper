@@ -1,0 +1,422 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin>Hopkins, Kristina G.</origin>
+        <origin>Bhaskar, Aditi S.</origin>
+        <origin>Woznicki, Sean A.</origin>
+        <origin>Fanelli, Rosemary M.</origin>
+        <pubdate>2019</pubdate>
+        <title>Streamflow and precipitation event statistics for treatment, urban control, and forested control watersheds in Clarksburg, MD USA (2004-2018)</title>
+        <geoform>CSV File</geoform>
+        <pubinfo>
+          <pubplace>Reston, VA</pubplace>
+          <publish>U.S. Geological Survey</publish>
+        </pubinfo>
+        <onlink>https://doi.org/10.5066/P9CGWUKT</onlink>
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract>This dataset describes streamflow and precipitation event statistics for four watersheds located in Clarksburg, Maryland, USA. Streamflow and precipitation events were identified from fourteen years of sub-daily (5- and 15-minute) monitoring data spanning October 1, 2004 through September 30, 2018. A 6-hour inter-event window was used to define discrete streamflow and precipitation events. The following streamflow metrics were calculated for each event area normalized peak streamflow, runoff yield, runoff ratio, streamflow duration, time to peak, and rise rate. Precipitation event metrics include total precipitation depth and precipitation event duration.</abstract>
+      <purpose>Long-term monitoring in Clarksburg, Maryland, USA provided an opportunity to examine changes in event-based streamflow metrics in two treatment watersheds that transitioned from agriculture to suburban development with a high density of green stormwater infrastructure. A before-after-control-reference-impact design was used to assess differences in streamflow-event magnitude and timing in two treatment watersheds compared to a forested control and urban control watershed.</purpose>
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate>20041001</begdate>
+          <enddate>20180930</enddate>
+        </rngdates>
+      </timeinfo>
+      <current>ground condition</current>
+    </timeperd>
+    <status>
+      <progress>Complete</progress>
+      <update>None planned</update>
+    </status>
+    <spdom>
+      <bounding>
+        <westbc>-77.406921387226</westbc>
+        <eastbc>-77.170715332548</eastbc>
+        <northbc>39.335226581096</northbc>
+        <southbc>39.17784833427</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>USGS Thesaurus</themekt>
+        <themekey>streamflow</themekey>
+        <themekey>urbanization</themekey>
+        <themekey>hydrograph</themekey>
+        <themekey>stormwater</themekey>
+      </theme>
+      <place>
+        <placekt>Geographic Names Information System (GNIS)</placekt>
+        <placekey>Montgomery County</placekey>
+        <placekey>Maryland</placekey>
+        <placekey>Clarksburg</placekey>
+      </place>
+      <stratum>
+        <stratkt>USGS Thesaurus</stratkt>
+        <stratkey>streamflow</stratkey>
+        <stratkey>land use change</stratkey>
+        <stratkey>urban</stratkey>
+        <stratkey>hydrology</stratkey>
+        <stratkey>stormwater</stratkey>
+        <stratkey>peak flow</stratkey>
+      </stratum>
+    </keywords>
+    <accconst>none</accconst>
+    <useconst>none</useconst>
+    <ptcontac>
+      <cntinfo>
+        <cntperp>
+          <cntper>Kristina G Hopkins</cntper>
+          <cntorg>SOUTHEAST REGION: SAWSC-RALEIGH OFFICE</cntorg>
+        </cntperp>
+        <cntpos>Research Physical Scientist</cntpos>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>3916 Sunset Ridge Rd</address>
+          <city>Raleigh</city>
+          <state>NC</state>
+          <postal>27607</postal>
+          <country>US</country>
+        </cntaddr>
+        <cntvoice>919-571-4042</cntvoice>
+        <cntemail>khopkins@usgs.gov</cntemail>
+      </cntinfo>
+    </ptcontac>
+  </idinfo>
+  <dataqual>
+    <attracc>
+      <attraccr>No formal attribute accuracy tests were conducted</attraccr>
+    </attracc>
+    <logic>No formal logical accuracy tests were conducted</logic>
+    <complete>Data set is considered complete for the information presented, as described in the abstract. Users are advised to read the rest of the metadata record carefully for additional details.</complete>
+    <posacc>
+      <horizpa>
+        <horizpar>No formal positional accuracy tests were conducted</horizpar>
+      </horizpa>
+      <vertacc>
+        <vertaccr>No formal positional accuracy tests were conducted</vertaccr>
+      </vertacc>
+    </posacc>
+    <lineage>
+      <procstep>
+        <procdesc>Streamflow data was downloaded from the U.S. Geological Survey (USGS) National Water Information System at https://waterdata.usgs.gov/nwis. BaseflowSeparation function within the EcoHydRology R package was used to separate the streamflow record into quickflow and baseflow using a one parameter digital filter with a filter parameter of 0.99 and three passes (Fuka et al., 2018). A 6-hour inter-event window was used to define discrete streamflow events. Streamflow events were identified using the following three criteria: 1) Streamflow greater than a discharge threshold Dt, where Dt was 0.057 cms (2 cfs) for watersheds with an area &lt; 3 square kilometers and 0.085 cms (3 cfs) for watersheds with an area &gt; 3 square kilometers; 2) Quickflow greater than a quickflow threshold Qt of 0.007 cms (0.25 cfs) or 3) Quickflow slope greater than a quickflow slope threshold St of 0.006 (0.2 cfs) calculated as quickflow minus a 24-hour leading (ti+24) and 12-hour lagging (ti-12) minimum quickflow. &#13;
+&#13;
+Precipitation was obtained from two rain gages: 1) the Black Hills rain gage maintained by Montgomery County Department of Environmental Protection (prior to June 20, 2014) and the Ten Mile Creek Slidell, MD precipitation gage maintained by USGS (June 20, 2014 to September 30, 2018). Precipitation events were identified using a 6-hour minimum inter-event period using the Hydrological Model Assessment and Development (hydromad) R package (Andrews et al., 2011).&#13;
+&#13;
+Start and end times for streamflow and precipitation events were matched based on overlapping dates and times. This pairing was accomplished by adding four hours to the start of the precipitation event and two hours to the end of the precipitation event and identifying streamflow response start and end times within the precipitation event window.</procdesc>
+        <procdate>20190701</procdate>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <spdoinfo>
+    <indspref>Clarksburg; Maryland; Montgomery County; USA</indspref>
+  </spdoinfo>
+  <eainfo>
+    <detailed>
+      <enttyp>
+        <enttypl>StormEvent_Loads_ClarksburgMD.csv</enttypl>
+        <enttypd>Clarksburg Watersheds Storm Event Metrics</enttypd>
+        <enttypds>Kristina Hopkins</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Site</attrlabl>
+        <attrdef>The site name of the study watershed.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Urban Control</edomv>
+            <edomvd>USGS streamgage 01644375 Little Seneca Creek Tributary near Germantown, MD</edomvd>
+            <edomvds>Producer defined.</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Forested Control</edomv>
+            <edomvd>USGS Streamgage 01643395 Soper Branch at Hyattstown, MD</edomvd>
+            <edomvds>Producer defined.</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Treatment 1</edomv>
+            <edomvd>USGS Streamgage 01644371 Little Seneca Creek Tributary near Clarksburg, MD</edomvd>
+            <edomvds>Producer defined.</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Treatment 2</edomv>
+            <edomvd>USGS streamgage 01644372 Little Seneca Creek Tributary at Brink, MD</edomvd>
+            <edomvds>Producer defined.</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_StartTime</attrlabl>
+        <attrdef>Start date and time of the streamflow event in eastern standard time.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>10/18/2004 23:05</rdommin>
+            <rdommax>9/27/2018 14:30</rdommax>
+            <attrunit>mm/dd/yyyy hh:mm in eastern standard time (EST)</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_EndTime</attrlabl>
+        <attrdef>End date and time of the streamflow event in eastern standard time.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>10/20/2004 5:40</rdommin>
+            <rdommax>10/2/2018 14:30</rdommax>
+            <attrunit>mm/dd/yyyy hh:mm in eastern standard time (EST)</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_PeakTime</attrlabl>
+        <attrdef>Date and time of peak streamflow for the event in eastern standard time.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>10/19/2004 22:20</rdommin>
+            <rdommax>9/27/2018 19:15</rdommax>
+            <attrunit>mm/dd/yyyy hh:mm in eastern standard time (EST)</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_Total_mm</attrlabl>
+        <attrdef>Total streamflow event yield in millimeters, calculated as total streamflow volume divided by watershed area.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>187.65</rdommax>
+            <attrunit>millimeters</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_Runoff_mm</attrlabl>
+        <attrdef>Total runoff event yield in millimeters, calculated as total runoff volume divided by watershed area.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>144</rdommax>
+            <attrunit>millimeters</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_Peak_cms.sqkm</attrlabl>
+        <attrdef>Peak streamflow for the event normalized by watershed area.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>16.03</rdommax>
+            <attrunit>cubic meters per second per square kilometers</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_Peak_cfs</attrlabl>
+        <attrdef>Peak streamflow for the event.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>1350</rdommax>
+            <attrunit>cubic feet per second</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_Duration_hrs</attrlabl>
+        <attrdef>Streamflow event duration in hours</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>473.3</rdommax>
+            <attrunit>hours</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_TimetoFlowPeak_hrs</attrlabl>
+        <attrdef>Hours to peak streamflow calculated as Q_PeakTime minus Q_StartTime</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>248.50</rdommax>
+            <attrunit>hours</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_RiseRate_cms.hr</attrlabl>
+        <attrdef>Rate of the hydrograph rising limb for each event, calculated as Q_Peak_cfs times 0.0283168 divided by Q_TimetoFlowPeak_hrs.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>14.272</rdommax>
+            <attrunit>cubic meters per second per hour</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_ProirDry_hrs</attrlabl>
+        <attrdef>Number of hours of non-event streamflow prior to each event</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>1972.75</rdommax>
+            <attrunit>hours</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_Runoff_PrecipRatio</attrlabl>
+        <attrdef>Runoff ratio for each event, calculated as Q_Runoff_mm divided by Precip_Total_mm</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>1.59469</rdommax>
+            <attrunit>unitless</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Q_Total_PrecipRatio</attrlabl>
+        <attrdef>Total streamflow ratio for each event, calculated as Q_Runoff_mm divided by Precip_Total_mm</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>12.65778</rdommax>
+            <attrunit>unitless</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Precip_StartTime</attrlabl>
+        <attrdef>Start date and time of the precipitation event in eastern standard time.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>10/13/2004 17:00</rdommin>
+            <rdommax>9/27/2018 12:15</rdommax>
+            <attrunit>mm/dd/yyyy hh:mm in eastern standard time (EST)</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Precip_EndTime</attrlabl>
+        <attrdef>End date and time of the precipitation event in eastern standard time.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>10/14/2004 2:40</rdommin>
+            <rdommax>9/28/2018 2:15</rdommax>
+            <attrunit>mm/dd/yyyy hh:mm in eastern standard time (EST)</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Precip_Total_mm</attrlabl>
+        <attrdef>Total precipitation depth for each event in millimeters.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.508</rdommin>
+            <rdommax>271.272</rdommax>
+            <attrunit>millimeters</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Precip_Duration_hrs</attrlabl>
+        <attrdef>Length of precipitation event in hours</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.08</rdommin>
+            <rdommax>89.42</rdommax>
+            <attrunit>hours</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Precip_PriorDry_hrs</attrlabl>
+        <attrdef>Number of hours without a precipitation event prior to the event.</attrdef>
+        <attrdefs>Producer defined.</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>6</rdommin>
+            <rdommax>801.67</rdommax>
+            <attrunit>hours</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+    </detailed>
+  </eainfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntperp>
+          <cntper>GS ScienceBase</cntper>
+          <cntorg>U.S Geological Survey</cntorg>
+        </cntperp>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>Denver Federal Center, Building 810, Mail Stop 302</address>
+          <city>Denver</city>
+          <state>CO</state>
+          <postal>80225</postal>
+          <country>United States</country>
+        </cntaddr>
+        <cntvoice>1-888-275-8747</cntvoice>
+        <cntemail>sciencebase@usgs.gov</cntemail>
+      </cntinfo>
+    </distrib>
+    <distliab>Unless otherwise stated, all data, metadata and related materials are considered to satisfy the quality standards relative to the purpose for which the data were collected. Although these data and associated metadata have been reviewed for accuracy and completeness and approved for release by the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data for other purposes, nor on all computer systems, nor shall the act of distribution constitute any such warranty.</distliab>
+  </distinfo>
+  <metainfo>
+    <metd>20190730</metd>
+    <metc>
+      <cntinfo>
+        <cntperp>
+          <cntper>Kristina G Hopkins</cntper>
+          <cntorg>SOUTHEAST REGION: SAWSC-RALEIGH OFFICE</cntorg>
+        </cntperp>
+        <cntpos>Research Physical Scientist</cntpos>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>3916 Sunset Ridge Rd</address>
+          <city>Raleigh</city>
+          <state>NC</state>
+          <postal>27607</postal>
+          <country>US</country>
+        </cntaddr>
+        <cntvoice>919-571-4042</cntvoice>
+        <cntemail>khopkins@usgs.gov</cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn>Content Standard for Digital Geospatial Metadata</metstdn>
+    <metstdv>FGDC-STD-001-1998</metstdv>
+  </metainfo>
+</metadata>
