@@ -90,28 +90,29 @@ plot(c(1,1), c(landuse_postscm$ti_early[1], landuse_postscm$ti_later[1]), type =
 lines(c(1.1,1.1), c(landuse_postscm$ei_early[1], landuse_postscm$ei_later[1]), col = 'red', type = 'o')
 lines(c(1.2,1.2), c(landuse_postscm$s_early[1], landuse_postscm$s_later[1]), col = 'blue', type = 'o')
 
-lines(c(2.0,2.0), c(landuse_postscm$ei_early[2], landuse_postscm$ei_later[2]), col = 'black', type = 'o')
+lines(c(2.0,2.0), c(landuse_postscm$ti_early[2], landuse_postscm$ti_later[2]), col = 'black', type = 'o')
 lines(c(2.1,2.1), c(landuse_postscm$ei_early[2], landuse_postscm$ei_later[2]), col = 'red', type = 'o')
 lines(c(2.2,2.2), c(landuse_postscm$s_early[2], landuse_postscm$s_later[2]), col = 'blue', type = 'o')
 
 
-lines(c(3.0,3.0), c(landuse_postscm$ei_early[3], landuse_postscm$ei_later[3]), col = 'black', type = 'o')
+lines(c(3.0,3.0), c(landuse_postscm$ti_early[3], landuse_postscm$ti_later[3]), col = 'black', type = 'o')
 lines(c(3.1,3.1), c(landuse_postscm$ei_early[3], landuse_postscm$ei_later[3]), col = 'red', type = 'o')
 lines(c(3.2,3.2), c(landuse_postscm$s_early[3], landuse_postscm$s_later[3]), col = 'blue', type = 'o')
 
 
-lines(c(4.0,4.0), c(landuse_postscm$ei_early[4], landuse_postscm$ei_later[4]), col = 'black', type = 'o')
+lines(c(4.0,4.0), c(landuse_postscm$ti_early[4], landuse_postscm$ti_later[4]), col = 'black', type = 'o')
 lines(c(4.1,4.1), c(landuse_postscm$ei_early[4], landuse_postscm$ei_later[4]), col = 'red', type = 'o')
 lines(c(4.2,4.2), c(landuse_postscm$s_early[4], landuse_postscm$s_later[4]), col = 'blue', type = 'o')
 
 
-lines(c(5.0,5.0), c(landuse_postscm$ei_early[5], landuse_postscm$ei_later[5]), col = 'black', type = 'o')
+lines(c(5.0,5.0), c(landuse_postscm$ti_early[5], landuse_postscm$ti_later[5]), col = 'black', type = 'o')
 lines(c(5.1,5.1), c(landuse_postscm$ei_early[5], landuse_postscm$ei_later[5]), col = 'red', type = 'o')
 lines(c(5.2,5.2), c(landuse_postscm$s_early[5], landuse_postscm$s_later[5]), col = 'blue', type = 'o')
 
 
 axis(1, at = c(-1, 1, 2, 3, 4, 5, 6), lab = c("", landuse_postscm$imperv_sitecode, ""))
 axis(2)
+legend("topleft", c("ti", "ei", "s"), col = c('black', 'red', 'blue'), lty = c(1,1,1))
 
 
 
