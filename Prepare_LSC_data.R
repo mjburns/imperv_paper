@@ -40,7 +40,7 @@ data <- data.df.tibble %>%
   select(Site, Precip_EndTime, Precip_Total_mm, Q_Runoff_mm)
 
 ## Save the lsc events
-save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max.Rdata", sep = ""))
+## save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max.Rdata", sep = ""))
 
 ## Get the LSC land-use data
 landuse <- get(load("~/Documents/imperv_paper/Input/ei_ts_11_sites_correct.rda"))
@@ -114,7 +114,17 @@ axis(1, at = c(-1, 1, 2, 3, 4, 5, 6), lab = c("", landuse_postscm$imperv_sitecod
 axis(2)
 legend("topleft", c("ti", "ei", "s"), col = c('black', 'red', 'blue'), lty = c(1,1,1))
 
+## Checking paired catchment work
+#control catchment area total = 2.21 ha
+#Impact is 2.62 ha
+pair <- read.csv("~/Documents/imperv_paper/Input/Paired.csv", stringsAsFactors = FALSE, header = TRUE, na.strings = -9999)
+pair$control_mm <- ((pair$control_L/1000)/(2.21*10000))*1000
+pair$impact_mm <- ((pair$impact_L/1000)/(2.62*10000))*1000
 
+plot(pair$rainfall_mm, pair$control_mm, col = 'red')
+points(pair$rainfall_mm, pair$impact_mm, col = 'blue')
 
+lm_control <- lm(control_mm ~ rainfall_mm, data = pair)
+lm_impact <- lm(impact_mm ~ rainfall_mm, data = pair)
 
 
