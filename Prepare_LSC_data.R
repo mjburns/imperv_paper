@@ -22,8 +22,8 @@ precip_max <- 999999999999
 
 ## For this paper, screen the lsc data to only get rainfall runoff data from 2014 onwards
 ## Roughly the time point by which most SCMs were installed
-#date_start <- ymd_hms("2014-01-01 00:00:00", tz = "UTC")
-date_start <- ymd_hms("2000-01-01 00:00:00", tz = "UTC")
+#date_start <- ymd_hms("2000-01-01 00:00:00", tz = "UTC")
+date_start <- ymd_hms("2014-01-01 00:00:00", tz = "UTC")
 date_end <- max(flow_data_to_sample_screened$RainEnd_UTC)
 
 ## Format the lsc rainfall-runoff data similar to Clarkesburg
@@ -41,8 +41,9 @@ data <- data.df.tibble %>%
   select(Site, Precip_EndTime, Precip_Total_mm, Q_Runoff_mm)
 
 ## Save the lsc events
-## save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max.Rdata", sep = ""))
-save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max_all_data.Rdata", sep = ""))
+
+save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max.Rdata", sep = ""))
+##save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max_all_data.Rdata", sep = ""))
 
 ## Get the LSC land-use data
 landuse <- get(load("~/Documents/imperv_paper/Input/ei_ts_11_sites_correct.rda"))
@@ -71,8 +72,8 @@ for(i in 1:NROW(levels(factor(landuse_screened$sitecode)))) {
 
   ## Build a data.frame for the sites
   landuse_i_df <- data.frame(sitecode = get_site_i_post_scm_early$sitecode[1], ti_early = get_site_i_post_scm_early$ti[1], ti_later = get_site_i_post_scm_later$ti[1],
-                             ei_early = get_site_i_post_scm_early$ei[1], ei_later = get_site_i_post_scm_later$ei[1], s_early = get_site_i_post_scm_early$s[1],
-                             s_later = get_site_i_post_scm_later$s[1])
+                             ei_early = get_site_i_post_scm_early$ei[1], ei_later = get_site_i_post_scm_later$ei[1], s_early = get_site_i_post_scm_early$ro[1],
+                             s_later = get_site_i_post_scm_later$ro[1])
   
   #Combine into the above
   landuse_postscm <- rbind(landuse_postscm, landuse_i_df) } #End the loop now
@@ -115,6 +116,12 @@ lines(c(5.2,5.2), c(landuse_postscm$s_early[5], landuse_postscm$s_later[5]), col
 axis(1, at = c(-1, 1, 2, 3, 4, 5, 6), lab = c("", landuse_postscm$imperv_sitecode, ""))
 axis(2)
 legend("topleft", c("ti", "ei", "s"), col = c('black', 'red', 'blue'), lty = c(1,1,1))
+
+## Avg
+landuse_postscm$ti_mean <- (landuse_postscm$ti_early + landuse_postscm$ti_later)/2
+landuse_postscm$ei_mean <- (landuse_postscm$ei_early + landuse_postscm$ei_later)/2
+landuse_postscm$s_mean <- (landuse_postscm$s_early + landuse_postscm$s_later)/2
+
 
 ## Checking paired catchment work
 #control catchment area total = 2.21 ha
