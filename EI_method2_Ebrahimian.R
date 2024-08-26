@@ -25,7 +25,10 @@ date_start_usa <- as.Date("2016-01-01")
 date_end_usa <- as.Date("2018-12-31")
 
 # Read in rainfall-runoff data
+# lsc_events_no_precip_max_all_data.Rdata
+
 data <- get(load("Input/lsc_events_no_precip_max.Rdata"))
+#data <- get(load("Input/lsc_events_no_precip_max_all_data.Rdata"))
 data_aus <- data %>%
   mutate(region = "Melbourne") %>%
   relocate(region, .before = Site)

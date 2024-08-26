@@ -22,7 +22,8 @@ precip_max <- 999999999999
 
 ## For this paper, screen the lsc data to only get rainfall runoff data from 2014 onwards
 ## Roughly the time point by which most SCMs were installed
-date_start <- ymd_hms("2014-01-01 00:00:00", tz = "UTC")
+#date_start <- ymd_hms("2014-01-01 00:00:00", tz = "UTC")
+date_start <- ymd_hms("2000-01-01 00:00:00", tz = "UTC")
 date_end <- max(flow_data_to_sample_screened$RainEnd_UTC)
 
 ## Format the lsc rainfall-runoff data similar to Clarkesburg
@@ -41,6 +42,7 @@ data <- data.df.tibble %>%
 
 ## Save the lsc events
 ## save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max.Rdata", sep = ""))
+save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max_all_data.Rdata", sep = ""))
 
 ## Get the LSC land-use data
 landuse <- get(load("~/Documents/imperv_paper/Input/ei_ts_11_sites_correct.rda"))
@@ -123,6 +125,7 @@ pair$impact_mm <- ((pair$impact_L/1000)/(2.62*10000))*1000
 
 plot(pair$rainfall_mm, pair$control_mm, col = 'red')
 points(pair$rainfall_mm, pair$impact_mm, col = 'blue')
+legend("bottomright", c("Control (Bradman)", "Impact (Heath)"), col = c('red', 'blue'), pch = c(1,1))
 
 lm_control <- lm(control_mm ~ rainfall_mm, data = pair)
 lm_impact <- lm(impact_mm ~ rainfall_mm, data = pair)
