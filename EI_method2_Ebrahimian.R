@@ -27,8 +27,8 @@ date_end_usa <- as.Date("2018-12-31")
 # Read in rainfall-runoff data
 # lsc_events_no_precip_max_all_data.Rdata
 
-data <- get(load("Input/lsc_events_no_precip_max.Rdata"))
-#data <- get(load("Input/lsc_events_no_precip_max_all_data.Rdata"))
+#data <- get(load("Input/lsc_events_no_precip_max.Rdata"))
+data <- get(load("Input/lsc_events_no_precip_max_all_data.Rdata"))
 data_aus <- data %>%
   mutate(region = "Melbourne") %>%
   relocate(region, .before = Site)
@@ -269,3 +269,22 @@ rm(i, events, num_combined_events, ols, ols_resid,
 #   
 # }
 # rm(i, events_combo, wls_results_i, plot)
+
+
+
+### Step 05: Make Plots for Manuscript -----------------------------------------
+
+# Specify if event is EIA or combo
+combo_events <- anti_join(events_all, eia_events, 
+                          by = c("Site", "Precip_EndTime", 
+                                 "Precip_Total_mm", "Q_Runoff_mm")) %>%
+  mutate(Event_Type = "Combo")
+eia_events <- mutate(eia_events, Event_Type = "EI")
+events_all <- bind_rows(eia_events, combo_events)
+
+# 
+ggplot(events_all, 
+       aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point() +
+  facet_wrap(Site ~ ., scales = "free")
+
