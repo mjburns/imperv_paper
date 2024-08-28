@@ -56,7 +56,8 @@ data_usa <-
   filter(Precip_Total_mm >= precip_min & Precip_Total_mm <= precip_max) %>%
   select(Site, Precip_EndTime, Precip_Total_mm, Q_Runoff_mm) %>%
   mutate(region = "Clarksburg") %>%
-  relocate(region, .before = Site)
+  relocate(region, .before = Site) %>%
+  filter(Site != "Forested Control")
 
 # Combine datasets
 data <- bind_rows(data_aus, data_usa)
@@ -122,7 +123,8 @@ rm(i, data_all_i, data_nonzero_i, ols_all_i, ols_nonzero_i,
 ### Step 03: Successive Weighted Linear Regression -----------------------------
 
 # Conduct successive weighted linear regression
-wls_results <- tibble()
+wls_results_table2 <- tibble()
+wls_results_appendix <- tibble()
 eia_events <- tibble()
 
 for (i in unique(data$Site)) {
@@ -133,6 +135,8 @@ for (i in unique(data$Site)) {
   } else {
     events <- events_nonzero %>% filter(Site == i)
   }
+  
+  events_initial <- events
   
   num_combined_events <- 1     # simply to initialize while loop
   while (num_combined_events > 0) {
@@ -153,7 +157,7 @@ for (i in unique(data$Site)) {
                 data = weights, weights = Weight)
     wls_slope <- wls$coefficients[[2]]
     wls_yint <- wls$coefficients[[1]]
-    # wls_xint <- (-1*wls_yint)/wls_slope
+    wls_xint <- (-1*wls_yint)/wls_slope
     wls_ci <- confint(wls)
     wls_adjrsquared <- summary(wls)$adj.r.squared
     wls_mse <- mean(summary(wls)$residuals^2)
@@ -185,17 +189,23 @@ for (i in unique(data$Site)) {
         filter(combo_event == 0) %>%
         select(Site, Precip_EndTime, Precip_Total_mm, Q_Runoff_mm)
       rm(ols, ols_resid, weights, wls, wls_ci, wls_adjrsquared, wls_mse,
-         wls_slope, wls_yint, wls_se, combined_events)
+         wls_slope, wls_yint, wls_xint, wls_se, combined_events)
       
     } else {
       
       # Save results
-      wls_results_i <- 
-        tibble(Site = i, n = nrow(wls), 
+      wls_results_table2_i <- 
+        tibble(Site = i, total_events = nrow(events_initial), 
+               ei_events = nrow(events), 
+               pct_ei_events = round(nrow(events)/nrow(events_initial), digits = 3),
+               slope = wls_slope, init_abstraction = wls_xint)
+      wls_results_appendix_i <- 
+        tibble(Site = i, 
                adj_r_squared = wls_adjrsquared, mean_squared_error = wls_mse,
                yint = wls_yint, yint_lb = wls_ci[[1]], yint_ub = wls_ci[[3]], 
                slope = wls_slope, slope_lb = wls_ci[[2]], slope_ub = wls_ci[[4]])
-      wls_results <- bind_rows(wls_results, wls_results_i)
+      wls_results_table2 <- bind_rows(wls_results_table2, wls_results_table2_i)
+      wls_results_appendix <- bind_rows(wls_results_appendix, wls_results_appendix_i)
       eia_events_i <- combined_events %>%
         select(Site, Precip_EndTime, Precip_Total_mm, Q_Runoff_mm)
       eia_events <- bind_rows(eia_events, eia_events_i)
@@ -204,8 +214,8 @@ for (i in unique(data$Site)) {
   }
 }
 rm(i, events, num_combined_events, ols, ols_resid, 
-   weights, wls, wls_slope, wls_yint, wls_se, wls_ci, wls_adjrsquared, wls_mse,
-   combined_events, wls_results_i, eia_events_i)
+   weights, wls, wls_slope, wls_yint, wls_xint, wls_se, wls_ci, wls_adjrsquared, wls_mse,
+   combined_events, wls_results_table2_i, wls_results_appendix_i, eia_events_i)
 
 
 
@@ -259,4 +269,3 @@ rm(i, events, num_combined_events, ols, ols_resid,
 #   
 # }
 # rm(i, events_combo, wls_results_i, plot)
-
