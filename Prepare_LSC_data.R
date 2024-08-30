@@ -123,18 +123,24 @@ landuse_postscm$ei_mean <- (landuse_postscm$ei_early + landuse_postscm$ei_later)
 landuse_postscm$s_mean <- (landuse_postscm$s_early + landuse_postscm$s_later)/2
 
 
+
+
+
+
 ## Checking paired catchment work
+## Based on discussions with Chris and Peter Poelsma
+## This text can be removed at some point
 #control catchment area total = 2.21 ha
 #Impact is 2.62 ha
-pair <- read.csv("~/Documents/imperv_paper/Input/Paired.csv", stringsAsFactors = FALSE, header = TRUE, na.strings = -9999)
-pair$control_mm <- ((pair$control_L/1000)/(2.21*10000))*1000
-pair$impact_mm <- ((pair$impact_L/1000)/(2.62*10000))*1000
+#pair <- read.csv("~/Documents/imperv_paper/Input/Paired.csv", stringsAsFactors = FALSE, header = TRUE, na.strings = -9999)
+#pair$control_mm <- ((pair$control_L/1000)/(2.21*10000))*1000
+#pair$impact_mm <- ((pair$impact_L/1000)/(2.62*10000))*1000
 
-plot(pair$rainfall_mm, pair$control_mm, col = 'red')
-points(pair$rainfall_mm, pair$impact_mm, col = 'blue')
-legend("bottomright", c("Control (Bradman)", "Impact (Heath)"), col = c('red', 'blue'), pch = c(1,1))
+#plot(pair$rainfall_mm, pair$control_mm, col = 'red')
+#points(pair$rainfall_mm, pair$impact_mm, col = 'blue')
+#legend("bottomright", c("Control (Bradman)", "Impact (Heath)"), col = c('red', 'blue'), pch = c(1,1))
 
-lm_control <- lm(control_mm ~ rainfall_mm, data = pair)
-lm_impact <- lm(impact_mm ~ rainfall_mm, data = pair)
+#lm_control <- lm(control_mm ~ rainfall_mm, data = pair)
+#lm_impact <- lm(impact_mm ~ rainfall_mm, data = pair)
 
 
