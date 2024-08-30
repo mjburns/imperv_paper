@@ -122,8 +122,13 @@ landuse_postscm$ti_mean <- (landuse_postscm$ti_early + landuse_postscm$ti_later)
 landuse_postscm$ei_mean <- (landuse_postscm$ei_early + landuse_postscm$ei_later)/2
 landuse_postscm$s_mean <- (landuse_postscm$s_early + landuse_postscm$s_later)/2
 
+## Add new site names and round
+## Table 3 Melb data
+order_paper <- c("D4", "L4", "L1", "Ln", "Ls")
+landuse_postscm_ordered <- landuse_postscm[match(order_paper, landuse_postscm$imperv_sitecode),]
 
-
+#Generate table 3
+table_three_melb <- data.frame(Treatment = landuse_postscm_ordered$imperv_sitecode, method_one_es = round((landuse_postscm_ordered$s_mean * 100),1), method_two_ei = c(0,0,0,0,0), ti = round((landuse_postscm_ordered$ti_mean * 100),1))
 
 
 
