@@ -514,3 +514,25 @@ figure3 <- plot_grid(plot_D4, plot_legend,
                      align = "hv", axis = "tblr", nrow = 4, ncol = 2)
 ggsave("figure3.png", figure3, height = 8, width = 6.5, units = "in")
 
+# Figure 4
+fig4_data <- tibble(site = c("Melbourne - D4", "Melbourne - L4", 
+                             "Melbourne - L1", "Melbourne - Ln", 
+                             "Melbourne - Ls", "Clarksburg - Treatment 1",
+                             "Clarksburg - Treatment 2"), 
+                    method_1 = c(1.8, 6.1, 21.3, 1.6, 6.4, 7.7, 12.2), 
+                    method_2 = c(2.8, 7.7, 12.1, 4.1, 12.2, 5.5, 9.9), 
+                    total_imp = c(6.7, 14.1, 27.8, 8.3, 22.3, 33, 44))
+
+figure4 <- fig4_data %>%
+  pivot_longer(cols = c(method_1, method_2, total_imp), 
+               names_to = "Method", values_to = "Imperviousness") %>%
+  mutate(Method = case_when(Method == "method_1" ~ "Flow Disturbance Frequency", 
+                            Method == "method_2" ~ "Rainfall-Runoff Regression", 
+                            Method == "total_imp" ~ "Total Imperviousness")) %>%
+  ggplot(aes(x = Imperviousness, y = reorder(site, Imperviousness, FUN = max))) +
+  geom_line() +
+  geom_point(aes(color = Method), size = 3) +
+  labs(x = "Imperviousness", y = "", color = "EI Estimation Method") +
+  theme_bw() +
+  theme(legend.position = "right")
+ggsave("figure4.png", figure4, height = 4, width = 6.5, units = "in")
