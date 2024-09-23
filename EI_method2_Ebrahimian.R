@@ -2,7 +2,7 @@
 ## Based on Ebrahimian and others (2016) Weighted Linear Regression
 
 # Charlie Stillwell
-# August 21, 2024
+# September 23, 2024
  
 
 
@@ -11,6 +11,7 @@
 # Load packages
 library(tidyverse)
 library(broom)
+library(cowplot)
 
 # Specify max and min precip depths to include in analysis (match data units)
 precip_min <- 2.54
@@ -278,10 +279,238 @@ combo_events <- anti_join(events_all, eia_events,
   mutate(Event_Type = "Combo")
 eia_events <- mutate(eia_events, Event_Type = "EI")
 events_all <- bind_rows(eia_events, combo_events)
+rm(combo_events, eia_events)
 
-# 
-ggplot(events_all, 
-       aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
-  geom_point() +
-  facet_wrap(Site ~ ., scales = "free")
+# Prepare data for plots
+events_all_plots <- events_all %>%
+  filter(Site != "Urban Control") %>%
+  mutate(Event_Type = case_when(Event_Type == "Combo" ~ "Combination", 
+                                Event_Type == "EI" ~ "Effective Impervious")) %>%
+  mutate(Site = case_when(Site == "D4" ~ "Melbourne - D4", 
+                          Site == "L4" ~ "Melbourne - L4", 
+                          Site == "L1" ~ "Melbourne - L1", 
+                          Site == "Ln" ~ "Melbourne - Ln", 
+                          Site == "Ls" ~ "Melbourne - Ls", 
+                          Site == "Treatment 1" ~ "Clarksburg - Treatment 1", 
+                          Site == "Treatment 2" ~ "Clarksburg - Treatment 2"))
+
+# Figure 2
+figure2 <- events_all_plots %>%
+  filter(Site == "Melbourne - Ls") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "Ls") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "Ls") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "right", 
+        axis.title.x = 
+          element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)), 
+        axis.title.y = 
+          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+ggsave("figure2.png", figure2, height = 3, width = 4.5, units = "in")
+figure2
+
+# Figure 3
+plot_D4 <- events_all_plots %>%
+  filter(Site == "Melbourne - D4") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "D4") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "D4") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
+       title = "Melbourne - D4") +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "none", 
+        plot.title = element_text(size = 12),
+        axis.title.x = element_blank(), 
+        axis.title.y = 
+          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)), 
+        plot.margin = unit(c(0, 0, 0, 0), "in"))
+plot_L4 <- events_all_plots %>%
+  filter(Site == "Melbourne - L4") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "L4") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "L4") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
+       title = "Melbourne - L4") +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "none", 
+        plot.title = element_text(size = 12),
+        axis.title = element_blank(), 
+        plot.margin = unit(c(0, 0, 0, 0), "in"))
+plot_L1 <- events_all_plots %>%
+  filter(Site == "Melbourne - L1") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "L1") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "L1") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
+       title = "Melbourne - L1") +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "none", 
+        plot.title = element_text(size = 12),
+        axis.title.x = element_blank(), 
+        axis.title.y = 
+          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)), 
+        plot.margin = unit(c(0, 0, 0, 0), "in"))
+plot_Ln <- events_all_plots %>%
+  filter(Site == "Melbourne - Ln") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "Ln") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "Ln") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
+       title = "Melbourne - Ln") +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "none", 
+        plot.title = element_text(size = 12),
+        axis.title.x = element_blank(), 
+        axis.title.y = 
+          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)), 
+        plot.margin = unit(c(0, 0, 0, 0), "in"))
+plot_Ls <- events_all_plots %>%
+  filter(Site == "Melbourne - Ls") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "Ls") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "Ls") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
+       title = "Melbourne - Ls") +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "none", 
+        plot.title = element_text(size = 12),
+        axis.title = element_blank(), 
+        plot.margin = unit(c(0, 0, 0, 0), "in"))
+plot_Treat1 <- events_all_plots %>%
+  filter(Site == "Clarksburg - Treatment 1") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "Treatment 1") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "Treatment 1") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
+       title = "Clarksburg - Treatment 1") +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "none", 
+        plot.title = element_text(size = 12),
+        axis.title.x = 
+          element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+        axis.title.y = 
+          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)), 
+        plot.margin = unit(c(0, 0, 0, 0), "in"))
+plot_Treat2 <- events_all_plots %>%
+  filter(Site == "Clarksburg - Treatment 2") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "Treatment 2") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "Treatment 2") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
+       title = "Clarksburg - Treatment 2") +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "none", 
+        plot.title = element_text(size = 12),
+        axis.title.x = 
+          element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+        axis.title.y = element_blank(), 
+        plot.margin = unit(c(0, 0, 0, 0), "in"))
+plot_legend <- events_all_plots %>%
+  filter(Site == "Melbourne - D4") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  geom_abline(
+    slope = {wls_results_appendix %>% 
+        filter(Site == "D4") %>% 
+        select(slope) %>% 
+        as.numeric()}, 
+    intercept = {wls_results_appendix %>% 
+        filter(Site == "D4") %>% 
+        select(yint) %>% 
+        as.numeric()}) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
+       title = "Melbourne - D4", color = "Event Type") +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  theme_bw() +
+  theme(legend.position = "right", 
+        plot.title = element_text(size = 12),
+        plot.margin = unit(c(0, 0, 0, 0), "in"))
+plot_legend <- get_legend(plot_legend)
+
+figure3 <- plot_grid(plot_D4, plot_legend, 
+                     plot_L1, plot_L4, 
+                     plot_Ln, plot_Ls, 
+                     plot_Treat1, plot_Treat2, 
+                     align = "hv", axis = "tblr", nrow = 4, ncol = 2)
+ggsave("figure3.png", figure3, height = 8, width = 6.5, units = "in")
 
