@@ -42,7 +42,7 @@ data <- data.df.tibble %>%
 
 ## Save the lsc events
 
-save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max.Rdata", sep = ""))
+#save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max.Rdata", sep = ""))
 ##save(data, file = paste(here::here(""), "/Input/lsc_events_no_precip_max_all_data.Rdata", sep = ""))
 
 ## Get the LSC land-use data
@@ -128,7 +128,7 @@ order_paper <- c("D4", "L4", "L1", "Ln", "Ls")
 landuse_postscm_ordered <- landuse_postscm[match(order_paper, landuse_postscm$imperv_sitecode),]
 
 #Generate table 3
-table_three_melb <- data.frame(Treatment = landuse_postscm_ordered$imperv_sitecode, method_one_es = round((landuse_postscm_ordered$s_mean * 100),1), method_two_ei = c(0,0,0,0,0), ti = round((landuse_postscm_ordered$ti_mean * 100),1))
+table_three_melb <- data.frame(Treatment = landuse_postscm_ordered$imperv_sitecode, method_one_es = round((landuse_postscm_ordered$s_mean * 100),0), method_two_ei = c(0,0,0,0,0), ti = round((landuse_postscm_ordered$ti_mean * 100),0))
 
 
 
