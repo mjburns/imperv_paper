@@ -295,18 +295,36 @@ events_all_plots <- events_all %>%
                           Site == "Treatment 2" ~ "Clarksburg - Treatment 2"))
 
 # Figure 2
-figure2 <- events_all_plots %>%
+figure2a <- events_all_plots %>%
   filter(Site == "Melbourne - Ls") %>%
   ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
   geom_point(shape = 1) +
   geom_abline(
-    slope = {wls_results_appendix %>% 
-        filter(Site == "Ls") %>% 
-        select(slope) %>% 
-        as.numeric()}, 
-    intercept = {wls_results_appendix %>% 
-        filter(Site == "Ls") %>% 
-        select(yint) %>% 
+    slope = {wls_results_appendix %>%
+        filter(Site == "Ls") %>%
+        select(slope) %>%
+        as.numeric()},
+    intercept = {wls_results_appendix %>%
+        filter(Site == "Ls") %>%
+        select(yint) %>%
+        as.numeric()}) +
+  geom_abline(linetype = "dashed",
+    slope = {wls_results_appendix %>%
+        filter(Site == "Ls") %>%
+        select(slope_lb) %>%
+        as.numeric()},
+    intercept = {wls_results_appendix %>%
+        filter(Site == "Ls") %>%
+        select(yint_lb) %>%
+        as.numeric()}) +
+  geom_abline(linetype = "dashed",
+    slope = {wls_results_appendix %>%
+        filter(Site == "Ls") %>%
+        select(slope_ub) %>%
+        as.numeric()},
+    intercept = {wls_results_appendix %>%
+        filter(Site == "Ls") %>%
+        select(yint_ub) %>%
         as.numeric()}) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
   scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
@@ -316,8 +334,41 @@ figure2 <- events_all_plots %>%
           element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)), 
         axis.title.y = 
           element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
-ggsave("figure2.png", figure2, height = 3, width = 4.5, units = "in")
-figure2
+ggsave("figure2a.png", figure2a, height = 3, width = 4.5, units = "in")
+figure2a
+
+figure2b <- ggplot() +
+  geom_point(aes(x = filter(events_all_plots, 
+                            Site == "Melbourne - Ls" & 
+                              Event_Type == "Effective Impervious")$Precip_Total_mm,
+                 y = filter(events_all_plots, 
+                            Site == "Melbourne - Ls" & 
+                              Event_Type == "Effective Impervious")$Q_Runoff_mm),
+             shape = 1, color = "blue") +
+  geom_point(aes(x = filter(events_all_plots, 
+                            Site == "Melbourne - Ls" & 
+                              Event_Type == "Combination")$Precip_Total_mm,
+                 y = filter(events_all_plots, 
+                            Site == "Melbourne - Ls" & 
+                              Event_Type == "Combination")$Q_Runoff_mm),
+             shape = 1, color = "red") +
+  geom_smooth(aes(x = filter(events_all_plots, 
+                             Site == "Melbourne - Ls" & 
+                               Event_Type == "Effective Impervious")$Precip_Total_mm, 
+                  y = filter(events_all_plots, 
+                             Site == "Melbourne - Ls" & 
+                               Event_Type == "Effective Impervious")$Q_Runoff_mm), 
+              method = "lm", se = TRUE) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+  theme_bw() +
+  theme(legend.position = "right", 
+        axis.title.x = 
+          element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)), 
+        axis.title.y = 
+          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+ggsave("figure2b.png", figure2b, height = 3, width = 4.5, units = "in")
+figure2b
 
 # Figure 3
 plot_D4 <- events_all_plots %>%
