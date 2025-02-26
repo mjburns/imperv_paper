@@ -580,11 +580,11 @@ figure4_plot <- fig4_data %>%
   mutate(Method = case_when(Method == "method_1" ~ "EI estimated by Flow Disturbance Frequency", 
                             Method == "method_2" ~ "EI estimated by Rainfall-Runoff Regression", 
                             Method == "total_imp" ~ "Total Imperviousness")) %>%
-  ggplot(aes(x = Imperviousness, y = reorder(site, Imperviousness, FUN = max))) +
+  ggplot(aes(x = Imperviousness/100, y = reorder(site, Imperviousness/100, FUN = max))) +
   geom_line() +
   geom_point(aes(color = Method), size = 2) +
-  scale_x_continuous(limits = c(0, 50)) +
-  labs(x = "", y = "", color = "Imperviousness") +
+  scale_x_continuous(limits = c(0, 0.5), labels = scales::percent) +
+  labs(x = "Imperviousness", y = "", color = "") +
   theme_bw() +
   theme(legend.position = "none")
 figure4_legend <- fig4_data %>%
@@ -593,13 +593,14 @@ figure4_legend <- fig4_data %>%
   mutate(Method = case_when(Method == "method_1" ~ "EI estimated by Flow Disturbance Frequency", 
                             Method == "method_2" ~ "EI estimated by Rainfall-Runoff Regression", 
                             Method == "total_imp" ~ "Total Imperviousness")) %>%
-  ggplot(aes(x = Imperviousness, y = reorder(site, Imperviousness, FUN = max))) +
+  ggplot(aes(x = Imperviousness/100, y = reorder(site, Imperviousness/100, FUN = max))) +
   geom_line() +
   geom_point(aes(color = Method), size = 2) +
-  scale_x_continuous(limits = c(0, 50)) +
-  labs(x = "", y = "", color = "Imperviousness") +
+  scale_x_continuous(limits = c(0, 0.5), labels = scales::percent) +
+  labs(x = "Imperviousness", y = "", color = "") +
   theme_bw() +
-  theme(legend.position = "right")
+  theme(legend.position = "right", 
+        legend.title = element_blank())
 figure4_legend <- get_legend(figure4_legend)
 
 figure4 <- plot_grid(figure4_plot, figure4_legend, 
