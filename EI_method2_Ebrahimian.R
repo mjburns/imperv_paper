@@ -2,7 +2,7 @@
 ## Based on Ebrahimian and others (2016) Weighted Linear Regression
 
 # Charlie Stillwell
-# September 23, 2024
+# February 26, 2025
  
 
 
@@ -193,8 +193,17 @@ for (i in unique(data$Site)) {
       
       # Save results
       wls_results_table2_i <- 
-        tibble(Site = i, total_events = nrow(events_initial), 
+        tibble(Site = i, 
+               total_events = nrow(events_initial), 
+               events_per_year = 
+                 if_else(i == "Urban Control" | i == "Treatment 1" | i == "Treatment 2", 
+                         round(nrow(events_initial) / 2.75, digits = 1),
+                         round(nrow(events_initial) / 3.75, digits = 1)),
                ei_events = nrow(events), 
+               ei_events_per_year = 
+                 if_else(i == "Urban Control" | i == "Treatment 1" | i == "Treatment 2", 
+                         round(nrow(events) / 2.75, digits = 1), 
+                         round(nrow(events) / 3.75, digits = 1)),
                pct_ei_events = round(nrow(events)/nrow(events_initial), digits = 3),
                slope = wls_slope, init_abstraction = wls_xint)
       wls_results_appendix_i <- 
