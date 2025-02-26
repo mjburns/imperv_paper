@@ -159,8 +159,13 @@ for (i in unique(data$Site)) {
     wls_ci <- confint(wls)
     wls_adjrsquared <- summary(wls)$adj.r.squared
     wls_mse <- mean(summary(wls)$residuals^2)
+    wls_se_at_xint <- predict(wls, 
+                              newdata = tibble(Precip_Total_mm = wls_xint), 
+                              se.fit = TRUE)$se.fit
+    wls_xint_lb <- (-wls_se_at_xint - wls_yint) / wls_slope
+    wls_xint_ub <- (wls_se_at_xint - wls_yint) / wls_slope
     wls <- augment(wls, data = weights)
-    wls_se <- sqrt(sum(wls$Weight * wls$.resid^2) / (nrow(wls) - 3))
+    wls_se <- sqrt(sum(wls$Weight * wls$.resid^2) / (nrow(wls) - 2))
     
     # Identify combined events
     combined_events <- wls %>%
@@ -187,7 +192,8 @@ for (i in unique(data$Site)) {
         filter(combo_event == 0) %>%
         select(Site, Precip_EndTime, Precip_Total_mm, Q_Runoff_mm)
       rm(ols, ols_resid, weights, wls, wls_ci, wls_adjrsquared, wls_mse,
-         wls_slope, wls_yint, wls_xint, wls_se, combined_events)
+         wls_slope, wls_yint, wls_xint, wls_se_at_xint, wls_xint_lb, wls_xint_ub, 
+         wls_se, combined_events)
       
     } else {
       
@@ -205,12 +211,22 @@ for (i in unique(data$Site)) {
                          round(nrow(events) / 2.75, digits = 1), 
                          round(nrow(events) / 3.75, digits = 1)),
                pct_ei_events = round(nrow(events)/nrow(events_initial), digits = 3),
-               slope = wls_slope, init_abstraction = wls_xint)
+               slope = wls_slope, 
+               init_abstraction = wls_xint)
       wls_results_appendix_i <- 
         tibble(Site = i, 
-               adj_r_squared = wls_adjrsquared, mean_squared_error = wls_mse,
-               yint = wls_yint, yint_lb = wls_ci[[1]], yint_ub = wls_ci[[3]], 
-               slope = wls_slope, slope_lb = wls_ci[[2]], slope_ub = wls_ci[[4]])
+               adj_r_squared = wls_adjrsquared, 
+               mean_squared_error = wls_mse,
+               yint = wls_yint, 
+               yint_lb = wls_ci[[1]], 
+               yint_ub = wls_ci[[3]], 
+               slope = wls_slope, 
+               slope_lb = wls_ci[[2]], 
+               slope_ub = wls_ci[[4]], 
+               xint = wls_xint, 
+               xint_lb = wls_xint_lb, 
+               xint_ub = wls_xint_ub,
+               wls_se = wls_se)
       wls_results_table2 <- bind_rows(wls_results_table2, wls_results_table2_i)
       wls_results_appendix <- bind_rows(wls_results_appendix, wls_results_appendix_i)
       eia_events_i <- combined_events %>%
@@ -221,7 +237,8 @@ for (i in unique(data$Site)) {
   }
 }
 rm(i, events, num_combined_events, ols, ols_resid, 
-   weights, wls, wls_slope, wls_yint, wls_xint, wls_se, wls_ci, wls_adjrsquared, wls_mse,
+   weights, wls, wls_slope, wls_yint, wls_xint, wls_se_at_xint, wls_xint_lb, wls_xint_ub,
+   wls_se, wls_ci, wls_adjrsquared, wls_mse,
    combined_events, wls_results_table2_i, wls_results_appendix_i, eia_events_i)
 
 
@@ -229,51 +246,51 @@ rm(i, events, num_combined_events, ols, ols_resid,
 ### Step 04: Plot Results ------------------------------------------------------
 
 # for (i in unique(data$Site)) {
-#   
+# 
 #   if (event_type == "all") {
-#     
+# 
 #     # Classify events
-#     eia_events_i <- eia_events %>% 
+#     eia_events_i <- eia_events %>%
 #       filter(Site == i) %>%
 #       mutate(combo_event = "EIA Event")
-#     non_eia_events_i <- events_all %>% 
+#     non_eia_events_i <- events_all %>%
 #       filter(Site == i) %>%
-#       anti_join(eia_events_i, by = c("Site", "Precip_EndTime", 
+#       anti_join(eia_events_i, by = c("Site", "Precip_EndTime",
 #                                      "Precip_Total_mm", "Q_Runoff_mm")) %>%
 #       mutate(combo_event = "Combo Event")
 #     events_combo <- bind_rows(eia_events_i, non_eia_events_i)
 #     rm(eia_events_i, non_eia_events_i)
-#     
+# 
 #   } else {
-#     
+# 
 #     # Classify events
-#     eia_events_i <- eia_events %>% 
+#     eia_events_i <- eia_events %>%
 #       filter(Site == i) %>%
 #       mutate(combo_event = "EIA Event")
-#     non_eia_events_i <- events_nonzero %>% 
+#     non_eia_events_i <- events_nonzero %>%
 #       filter(Site == i) %>%
-#       anti_join(eia_events_i, by = c("Site", "Precip_EndTime", 
+#       anti_join(eia_events_i, by = c("Site", "Precip_EndTime",
 #                                      "Precip_Total_mm", "Q_Runoff_mm")) %>%
 #       mutate(combo_event = "Combo Event")
 #     events_combo <- bind_rows(eia_events_i, non_eia_events_i)
 #     rm(eia_events_i, non_eia_events_i)
-#     
+# 
 #   }
-#   
-#   # Pull weighted linear regression coefficiencts
-#   wls_results_i <- wls_results %>%
+# 
+#   # Pull weighted linear regression coefficients
+#   wls_results_i <- wls_results_appendix %>%
 #     filter(Site == i)
-#   
+# 
 #   # Make plot
 #   plot <- events_combo %>%
 #     ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = combo_event)) +
 #     geom_point() +
 #     geom_abline(slope = wls_results_i$slope, intercept = wls_results_i$yint) +
-#     labs(x = "Precipitation Depth (mm)", y = "Runoff Depth (mm)", 
+#     labs(x = "Precipitation Depth (mm)", y = "Runoff Depth (mm)",
 #          title = i, color = "") +
 #     theme_bw()
 #   print(plot)
-#   
+# 
 # }
 # rm(i, events_combo, wls_results_i, plot)
 
@@ -304,80 +321,37 @@ events_all_plots <- events_all %>%
                           Site == "Treatment 2" ~ "Clarksburg - Treatment 2"))
 
 # Figure 2
-figure2a <- events_all_plots %>%
-  filter(Site == "Melbourne - Ls") %>%
-  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
-  geom_point(shape = 1) +
-  geom_abline(
-    slope = {wls_results_appendix %>%
-        filter(Site == "Ls") %>%
-        select(slope) %>%
-        as.numeric()},
-    intercept = {wls_results_appendix %>%
-        filter(Site == "Ls") %>%
-        select(yint) %>%
-        as.numeric()}) +
-  geom_abline(linetype = "dashed",
-    slope = {wls_results_appendix %>%
-        filter(Site == "Ls") %>%
-        select(slope_lb) %>%
-        as.numeric()},
-    intercept = {wls_results_appendix %>%
-        filter(Site == "Ls") %>%
-        select(yint_lb) %>%
-        as.numeric()}) +
-  geom_abline(linetype = "dashed",
-    slope = {wls_results_appendix %>%
-        filter(Site == "Ls") %>%
-        select(slope_ub) %>%
-        as.numeric()},
-    intercept = {wls_results_appendix %>%
-        filter(Site == "Ls") %>%
-        select(yint_ub) %>%
-        as.numeric()}) +
-  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
-  theme_bw() +
-  theme(legend.position = "right", 
-        axis.title.x = 
-          element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)), 
-        axis.title.y = 
-          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
-ggsave("figure2a.png", figure2a, height = 3, width = 4.5, units = "in")
-figure2a
-
-figure2b <- ggplot() +
+figure2 <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Melbourne - Ls" & 
                               Event_Type == "Effective Impervious")$Precip_Total_mm,
                  y = filter(events_all_plots, 
                             Site == "Melbourne - Ls" & 
                               Event_Type == "Effective Impervious")$Q_Runoff_mm),
-             shape = 1, color = "blue") +
+             shape = 1, color = "#00BFC4") +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Melbourne - Ls" & 
                               Event_Type == "Combination")$Precip_Total_mm,
                  y = filter(events_all_plots, 
                             Site == "Melbourne - Ls" & 
                               Event_Type == "Combination")$Q_Runoff_mm),
-             shape = 1, color = "red") +
-  geom_smooth(aes(x = filter(events_all_plots, 
-                             Site == "Melbourne - Ls" & 
-                               Event_Type == "Effective Impervious")$Precip_Total_mm, 
-                  y = filter(events_all_plots, 
-                             Site == "Melbourne - Ls" & 
-                               Event_Type == "Effective Impervious")$Q_Runoff_mm), 
-              method = "lm", se = TRUE) +
+             shape = 1, color = "#F8766D") +
+  geom_smooth(aes(x = filter(events_all_plots,
+                             Site == "Melbourne - Ls" &
+                               Event_Type == "Effective Impervious")$Precip_Total_mm,
+                  y = filter(events_all_plots,
+                             Site == "Melbourne - Ls" &
+                               Event_Type == "Effective Impervious")$Q_Runoff_mm),
+              method = "lm", formula = y ~ x, se = TRUE, color = "black") +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
   theme_bw() +
   theme(legend.position = "right", 
         axis.title.x = 
           element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)), 
         axis.title.y = 
           element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
-ggsave("figure2b.png", figure2b, height = 3, width = 4.5, units = "in")
-figure2b
+ggsave("figure2.png", figure2, height = 3, width = 4.5, units = "in")
+figure2
 
 # Figure 3
 plot_D4 <- events_all_plots %>%
