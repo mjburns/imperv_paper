@@ -649,12 +649,11 @@ fig4_data <- tibble(site = c("Melbourne - D4", "Melbourne - L4",
                     method_1 = c(1.8, 6.1, 21.3, 1.6, 6.4, 7.7, 12.2), 
                     method_2 = c(2.8, 7.7, 12.1, 4.1, 12.2, 5.5, 9.9), 
                     total_imp = c(6.7, 14.1, 27.8, 8.3, 22.3, 33, 44))
-
 figure4_plot <- fig4_data %>%
   pivot_longer(cols = c(method_1, method_2, total_imp), 
                names_to = "Method", values_to = "Imperviousness") %>%
-  mutate(Method = case_when(Method == "method_1" ~ "EI estimated by Flow Disturbance Frequency", 
-                            Method == "method_2" ~ "EI estimated by Rainfall-Runoff Regression", 
+  mutate(Method = case_when(Method == "method_1" ~ "EI, Flow Disturbance Frequency", 
+                            Method == "method_2" ~ "EI, Rainfall-Runoff Regression", 
                             Method == "total_imp" ~ "Total Imperviousness")) %>%
   ggplot(aes(x = Imperviousness/100, y = reorder(site, Imperviousness/100, FUN = max))) +
   geom_line() +
@@ -662,12 +661,16 @@ figure4_plot <- fig4_data %>%
   scale_x_continuous(limits = c(0, 0.5), labels = scales::percent) +
   labs(x = "Imperviousness", y = "", color = "") +
   theme_bw() +
-  theme(legend.position = "none")
+  theme(legend.position = "none", 
+        axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0), 
+                                    size = 10, color = "black"), 
+        axis.title.y = element_blank(), 
+        axis.text = element_text(size = 9, color = "black"))
 figure4_legend <- fig4_data %>%
   pivot_longer(cols = c(method_1, method_2, total_imp), 
                names_to = "Method", values_to = "Imperviousness") %>%
-  mutate(Method = case_when(Method == "method_1" ~ "EI estimated by Flow Disturbance Frequency", 
-                            Method == "method_2" ~ "EI estimated by Rainfall-Runoff Regression", 
+  mutate(Method = case_when(Method == "method_1" ~ "EI, Flow Disturbance Frequency", 
+                            Method == "method_2" ~ "EI, Rainfall-Runoff Regression", 
                             Method == "total_imp" ~ "Total Imperviousness")) %>%
   ggplot(aes(x = Imperviousness/100, y = reorder(site, Imperviousness/100, FUN = max))) +
   geom_line() +
@@ -676,11 +679,11 @@ figure4_legend <- fig4_data %>%
   labs(x = "Imperviousness", y = "", color = "") +
   theme_bw() +
   theme(legend.position = "right", 
-        legend.title = element_blank())
-figure4_legend <- get_legend(figure4_legend)
-
+        legend.title = element_blank(), 
+        legend.text = element_text(size = 9, color = "black"))
+figure4_legend <- get_legend(figure4_legend) %>% suppressWarnings()
 figure4 <- plot_grid(figure4_plot, figure4_legend, 
-                     align = "v", axis = "r", nrow = 2, 
-                     rel_heights = c(3,1))
-
-ggsave("figure4.png", figure4, height = 4, width = 4, units = "in")
+                     align = "v", axis = "r", nrow = 1, 
+                     rel_widths = c(2,1))
+figure4
+ggsave("figure4.png", figure4, height = 3, width = 6.5, units = "in")
