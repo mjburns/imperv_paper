@@ -299,9 +299,10 @@ rm(i, events, num_combined_events, ols, ols_resid,
 ### Step 05: Make Plots for Manuscript -----------------------------------------
 
 # Specify if event is EIA or combo
-combo_events <- anti_join(events_all, eia_events, 
-                          by = c("Site", "Precip_EndTime", 
-                                 "Precip_Total_mm", "Q_Runoff_mm")) %>%
+combo_events <- 
+  anti_join(events_all, eia_events, 
+            by = c("Site", "Precip_EndTime", 
+                   "Precip_Total_mm", "Q_Runoff_mm")) %>%
   mutate(Event_Type = "Combo")
 eia_events <- mutate(eia_events, Event_Type = "EI")
 events_all <- bind_rows(eia_events, combo_events)
@@ -345,13 +346,28 @@ figure2 <- ggplot() +
               method = "lm", formula = y ~ x, se = TRUE, color = "black") +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
   theme_bw() +
-  theme(legend.position = "right", 
+  theme(legend.position = "bottom", 
         axis.title.x = 
-          element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)), 
+          element_text(margin = margin(t = 10, r = 0, b = 0, l = 0), 
+                       size = 10, color = "black"), 
         axis.title.y = 
-          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
-ggsave("figure2.png", figure2, height = 3, width = 4.5, units = "in")
+          element_text(margin = margin(t = 0, r = 10, b = 0, l = 0), 
+                       size = 10, color = "black"), 
+        axis.text = element_text(size = 9, color = "black"))
+figure2_legend <- events_all_plots %>%
+  filter(Site == "Melbourne - Ls") %>%
+  ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
+  geom_point(shape = 1) +
+  labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
+  theme_bw() +
+  theme(legend.position = "right", 
+        legend.title = element_text(size = 10, color = "black"), 
+        legend.text = element_text(size = 9, color = "black"))
+figure2_legend <- get_legend(figure2_legend) %>% suppressWarnings()
+figure2 <- plot_grid(figure2, figure2_legend, rel_heights = c(3,1),
+                      align = "hv", axis = "tblr", nrow = 2)
 figure2
+ggsave("figure2.png", figure2, width = 3, height = 4, units = "in")
 
 # Figure 3
 plot_D4 <- events_all_plots %>%
