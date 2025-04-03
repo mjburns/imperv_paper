@@ -321,8 +321,8 @@ events_all_plots <- events_all %>%
                           Site == "Treatment 1" ~ "Clarksburg - Treatment 1", 
                           Site == "Treatment 2" ~ "Clarksburg - Treatment 2"))
 
-# Figure 2
-figure2 <- ggplot() +
+# Figure 3
+figure3 <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Melbourne - Ls" & 
                               Event_Type == "Effective Impervious")$Precip_Total_mm,
@@ -343,33 +343,44 @@ figure2 <- ggplot() +
                   y = filter(events_all_plots,
                              Site == "Melbourne - Ls" &
                                Event_Type == "Effective Impervious")$Q_Runoff_mm),
-              method = "lm", formula = y ~ x, se = TRUE, color = "black") +
+              method = "lm", formula = y ~ x, se = TRUE, 
+              linewidth = 0.5, color = "black") +
+  scale_x_continuous(limits = c(0, 60), 
+                     breaks = seq(0, 60, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 12), 
+                     breaks = seq(0, 12, 2), 
+                     expand = expansion(0.02, 0)) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
+  coord_cartesian(clip = "off") +
   theme_bw() +
-  theme(legend.position = "bottom", 
+  theme(legend.position = "right", 
         axis.title.x = 
           element_text(margin = margin(t = 10, r = 0, b = 0, l = 0), 
                        size = 10, color = "black"), 
         axis.title.y = 
           element_text(margin = margin(t = 0, r = 10, b = 0, l = 0), 
                        size = 10, color = "black"), 
-        axis.text = element_text(size = 9, color = "black"))
-figure2_legend <- events_all_plots %>%
+        axis.text = element_text(size = 9, color = "black"), 
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
+figure3_legend <- events_all_plots %>%
   filter(Site == "Melbourne - Ls") %>%
   ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
   geom_point(shape = 1) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
+  coord_cartesian(clip = "off") +
   theme_bw() +
   theme(legend.position = "right", 
         legend.title = element_text(size = 10, color = "black"), 
-        legend.text = element_text(size = 9, color = "black"))
-figure2_legend <- get_legend(figure2_legend) %>% suppressWarnings()
-figure2 <- plot_grid(figure2, figure2_legend, rel_heights = c(3,1),
-                      align = "hv", axis = "tblr", nrow = 2)
-figure2
-ggsave("figure2.png", figure2, width = 3, height = 4, units = "in")
+        legend.text = element_text(size = 9, color = "black"), 
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
+figure3_legend <- get_legend(figure3_legend) %>% suppressWarnings()
+figure3 <- plot_grid(figure3, figure3_legend, rel_widths = c(2,1),
+                     align = "hv", axis = "tblr", nrow = 1)
+figure3
+ggsave("Fig3.tiff", figure3, dpi = 300, width = 5.2, height = 3, units = "in")
 
-# Figure 3
+# Figure 5
 plot_D4 <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Melbourne - D4" & 
@@ -394,9 +405,13 @@ plot_D4 <- ggplot() +
               method = "lm", formula = y ~ x, se = TRUE, 
               color = "black", linewidth = 0.5) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
-       title = "Melbourne - D4") +
-  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+       title = "A. Melbourne - D4") +
+  scale_x_continuous(limits = c(0, 53), 
+                     breaks = seq(0, 50, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 10), 
+                     breaks = seq(0, 10, 2), 
+                     expand = expansion(0.01, 0)) +
   theme_bw() +
   theme(legend.position = "none", 
         plot.title = element_text(size = 11),
@@ -405,7 +420,7 @@ plot_D4 <- ggplot() +
           element_text(margin = margin(t = 0, r = 10, b = 0, l = 0), 
                        size = 10, color = "black"),
         axis.text = element_text(size = 9, color = "black"),
-        plot.margin = unit(c(0, 0, 0, 0), "in"))
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
 plot_L4 <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Melbourne - L4" & 
@@ -430,16 +445,20 @@ plot_L4 <- ggplot() +
               method = "lm", formula = y ~ x, se = TRUE, 
               color = "black", linewidth = 0.5) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
-       title = "Melbourne - L4") +
-  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+       title = "C. Melbourne - L4") +
+  scale_x_continuous(limits = c(0, 53), 
+                     breaks = seq(0, 50, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 10), 
+                     breaks = seq(0, 10, 2), 
+                     expand = expansion(0.01, 0)) +
   theme_bw() +
   theme(legend.position = "none", 
         plot.title = element_text(size = 11),
         axis.title.x = element_blank(), 
         axis.title.y = element_blank(),
         axis.text = element_text(size = 9, color = "black"),
-        plot.margin = unit(c(0, 0, 0, 0), "in"))
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
 plot_L1 <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Melbourne - L1" & 
@@ -464,9 +483,13 @@ plot_L1 <- ggplot() +
               method = "lm", formula = y ~ x, se = TRUE, 
               color = "black", linewidth = 0.5) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
-       title = "Melbourne - L1") +
-  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+       title = "B. Melbourne - L1") +
+  scale_x_continuous(limits = c(0, 53), 
+                     breaks = seq(0, 50, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 10), 
+                     breaks = seq(0, 10, 2), 
+                     expand = expansion(0.01, 0)) +
   theme_bw() +
   theme(legend.position = "none", 
         plot.title = element_text(size = 11),
@@ -475,7 +498,7 @@ plot_L1 <- ggplot() +
           element_text(margin = margin(t = 0, r = 10, b = 0, l = 0), 
                        size = 10, color = "black"),
         axis.text = element_text(size = 9, color = "black"),
-        plot.margin = unit(c(0, 0, 0, 0), "in"))
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
 plot_Ln <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Melbourne - Ln" & 
@@ -500,9 +523,13 @@ plot_Ln <- ggplot() +
               method = "lm", formula = y ~ x, se = TRUE, 
               color = "black", linewidth = 0.5) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
-       title = "Melbourne - Ln") +
-  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+       title = "D. Melbourne - Ln") +
+  scale_x_continuous(limits = c(0, 53), 
+                     breaks = seq(0, 50, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 10), 
+                     breaks = seq(0, 10, 2), 
+                     expand = expansion(0.01, 0)) +
   theme_bw() +
   theme(legend.position = "none", 
         plot.title = element_text(size = 11),
@@ -511,7 +538,7 @@ plot_Ln <- ggplot() +
           element_text(margin = margin(t = 0, r = 10, b = 0, l = 0), 
                        size = 10, color = "black"),
         axis.text = element_text(size = 9, color = "black"),
-        plot.margin = unit(c(0, 0, 0, 0), "in"))
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
 plot_Ls <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Melbourne - Ls" & 
@@ -536,16 +563,20 @@ plot_Ls <- ggplot() +
               method = "lm", formula = y ~ x, se = TRUE, 
               color = "black", linewidth = 0.5) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
-       title = "Melbourne - Ls") +
-  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+       title = "E. Melbourne - Ls") +
+  scale_x_continuous(limits = c(0, 53), 
+                     breaks = seq(0, 50, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 10), 
+                     breaks = seq(0, 10, 2), 
+                     expand = expansion(0.01, 0)) +
   theme_bw() +
   theme(legend.position = "none", 
         plot.title = element_text(size = 11),
         axis.title.x = element_blank(), 
         axis.title.y = element_blank(),
         axis.text = element_text(size = 9, color = "black"),
-        plot.margin = unit(c(0, 0, 0, 0), "in"))
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
 plot_Treat1 <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Clarksburg - Treatment 1" & 
@@ -570,9 +601,13 @@ plot_Treat1 <- ggplot() +
               method = "lm", formula = y ~ x, se = TRUE, 
               color = "black", linewidth = 0.5) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
-       title = "Clarksburg - Treatment 1") +
-  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+       title = "F. Clarksburg - Treatment 1") +
+  scale_x_continuous(limits = c(0, 53), 
+                     breaks = seq(0, 50, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 10), 
+                     breaks = seq(0, 10, 2), 
+                     expand = expansion(0.01, 0)) +
   theme_bw() +
   theme(legend.position = "none", 
         plot.title = element_text(size = 11),
@@ -583,7 +618,7 @@ plot_Treat1 <- ggplot() +
           element_text(margin = margin(t = 0, r = 10, b = 0, l = 0), 
                        size = 10, color = "black"),
         axis.text = element_text(size = 9, color = "black"),
-        plot.margin = unit(c(0, 0, 0, 0), "in"))
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
 plot_Treat2 <- ggplot() +
   geom_point(aes(x = filter(events_all_plots, 
                             Site == "Clarksburg - Treatment 2" & 
@@ -608,9 +643,13 @@ plot_Treat2 <- ggplot() +
               method = "lm", formula = y ~ x, se = TRUE, 
               color = "black", linewidth = 0.5) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", 
-       title = "Clarksburg - Treatment 2") +
-  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
+       title = "G. Clarksburg - Treatment 2") +
+  scale_x_continuous(limits = c(0, 53), 
+                     breaks = seq(0, 50, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 10), 
+                     breaks = seq(0, 10, 2), 
+                     expand = expansion(0.01, 0)) +
   theme_bw() +
   theme(legend.position = "none", 
         plot.title = element_text(size = 11),
@@ -619,37 +658,42 @@ plot_Treat2 <- ggplot() +
                        size = 10, color = "black"),
         axis.title.y = element_blank(),
         axis.text = element_text(size = 9, color = "black"),
-        plot.margin = unit(c(0, 0, 0, 0), "in"))
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
 plot_legend <- events_all_plots %>%
   filter(Site == "Melbourne - D4") %>%
   ggplot(aes(x = Precip_Total_mm, y = Q_Runoff_mm, color = Event_Type)) +
   geom_point(shape = 1) +
   labs(x = "Precipitation (mm)", y = "Quickflow (mm)", color = "Event Type") +
-  coord_cartesian(xlim = c(0, 50), ylim = c(0, 10)) +
+  scale_x_continuous(limits = c(0, 53), 
+                     breaks = seq(0, 50, 10), 
+                     expand = expansion(0.01, 0)) +
+  scale_y_continuous(limits = c(0, 10), 
+                     breaks = seq(0, 10, 2), 
+                     expand = expansion(0.01, 0)) +
   theme_bw() +
   theme(legend.position = "right", 
         legend.title = element_text(size = 10, color = "black"), 
         legend.text = element_text(size = 9, color = "black"), 
         plot.title = element_text(size = 11),
-        plot.margin = unit(c(0, 0, 0, 0), "in"))
+        plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "in"))
 plot_legend <- get_legend(plot_legend) %>% suppressWarnings()
-figure3 <- plot_grid(plot_D4, plot_legend, 
+figure5 <- plot_grid(plot_D4, plot_legend, 
                      plot_L1, plot_L4, 
                      plot_Ln, plot_Ls, 
                      plot_Treat1, plot_Treat2, 
                      align = "hv", axis = "tblr", nrow = 4, ncol = 2)
-figure3
-ggsave("figure3.png", figure3, height = 8, width = 6.5, units = "in")
+figure5
+ggsave("Fig5.tiff", figure5, dpi = 300, height = 7.5, width = 7, units = "in")
 
-# Figure 4
-fig4_data <- tibble(site = c("Melbourne - D4", "Melbourne - L4", 
+# Figure 6
+fig6_data <- tibble(site = c("Melbourne - D4", "Melbourne - L4", 
                              "Melbourne - L1", "Melbourne - Ln", 
                              "Melbourne - Ls", "Clarksburg - Treatment 1",
                              "Clarksburg - Treatment 2"), 
                     method_1 = c(1.8, 6.1, 21.3, 1.6, 6.4, 7.7, 12.2), 
                     method_2 = c(2.8, 7.7, 12.1, 4.1, 12.2, 5.5, 9.9), 
                     total_imp = c(6.7, 14.1, 27.8, 8.3, 22.3, 33, 44))
-figure4_plot <- fig4_data %>%
+figure6_plot <- fig6_data %>%
   pivot_longer(cols = c(method_1, method_2, total_imp), 
                names_to = "Method", values_to = "Imperviousness") %>%
   mutate(Method = case_when(Method == "method_1" ~ "EI, Flow Disturbance Frequency", 
@@ -657,7 +701,7 @@ figure4_plot <- fig4_data %>%
                             Method == "total_imp" ~ "Total Imperviousness")) %>%
   ggplot(aes(x = Imperviousness/100, y = reorder(site, Imperviousness/100, FUN = max))) +
   geom_line() +
-  geom_point(aes(color = Method), size = 2) +
+  geom_point(aes(fill = Method), shape = 21, size = 2) +
   scale_x_continuous(limits = c(0, 0.5), labels = scales::percent) +
   labs(x = "Imperviousness", y = "", color = "") +
   theme_bw() +
@@ -666,7 +710,7 @@ figure4_plot <- fig4_data %>%
                                     size = 10, color = "black"), 
         axis.title.y = element_blank(), 
         axis.text = element_text(size = 9, color = "black"))
-figure4_legend <- fig4_data %>%
+figure6_legend <- fig6_data %>%
   pivot_longer(cols = c(method_1, method_2, total_imp), 
                names_to = "Method", values_to = "Imperviousness") %>%
   mutate(Method = case_when(Method == "method_1" ~ "EI, Flow Disturbance Frequency", 
@@ -674,16 +718,17 @@ figure4_legend <- fig4_data %>%
                             Method == "total_imp" ~ "Total Imperviousness")) %>%
   ggplot(aes(x = Imperviousness/100, y = reorder(site, Imperviousness/100, FUN = max))) +
   geom_line() +
-  geom_point(aes(color = Method), size = 2) +
+  geom_point(aes(fill = Method), shape = 21, size = 2) +
   scale_x_continuous(limits = c(0, 0.5), labels = scales::percent) +
   labs(x = "Imperviousness", y = "", color = "") +
   theme_bw() +
   theme(legend.position = "right", 
         legend.title = element_blank(), 
         legend.text = element_text(size = 9, color = "black"))
-figure4_legend <- get_legend(figure4_legend) %>% suppressWarnings()
-figure4 <- plot_grid(figure4_plot, figure4_legend, 
-                     align = "v", axis = "r", nrow = 1, 
-                     rel_widths = c(2,1))
-figure4
-ggsave("figure4.png", figure4, height = 3, width = 6.5, units = "in")
+figure6_legend <- get_legend(figure6_legend) %>% suppressWarnings()
+figure6_legend <- plot_grid(NULL, figure6_legend, nrow = 1, rel_widths = c(1, 2))
+figure6 <- plot_grid(figure6_plot, figure6_legend, 
+                     align = "v", axis = "r", nrow = 2, 
+                     rel_heights = c(3,1))
+figure6
+ggsave("Fig6.tiff", figure6, dpi = 300, height = 4, width = 4.5, units = "in")
